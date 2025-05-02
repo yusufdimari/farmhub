@@ -8,26 +8,39 @@ import { loadStripe } from "@stripe/stripe-js";
 const stripe = new Stripe('sk_test_51R4TYx2NX5KAvJfd60lzUskVmJfU2LEQTMpT8MmpIUtyOLhbuPcWX7uFXZY9PcN2VIbAGe3zoYZENTrDX1F2W5Ys00DRj3ZLC8');
 const stripePromise= loadStripe('pk_test_51R4TYx2NX5KAvJfdIerQFsMVXcuL8lObfQ5DStHV1MJKEdWJlvoFSGXnSXXQ0tu0bl2LgXQBc1c68fvsQBczdFyN00MQh9KmHY')
 
+stripePromise.then(stripeClient => {
+  if (!stripeClient) {
+    console.error("Stripe.js failed to load!");
+  } else {
+    console.log("Stripe loaded successfully", stripeClient);
+  }
+});
+
+
 export async function getCartFromCookiesAction() {
 	const cartJson = await getCartCookieJson();
+	console.log("Cart JSON from cookies:", cartJson);
 	if (!cartJson) {
 		return null;
 	}
-
+	
 	// Retrieve Checkout Session and ensure PaymentIntent is expanded
 	const cart = await stripe.checkout.sessions.retrieve(cartJson.id, {
-		expand: ["line_items", "payment_intent"],
+		expand: ["line_items.data.price.product", "payment_intent"],
 	});
+	const paymentIntent = await stripe.paymentIntents.create({
+		amount:cart.amount_total||0,
+		currency: cart.currency||'gbp',
+		automatic_payment_methods: { enabled: true },
 
-	// Ensure `payment_intent` is an object before accessing `client_secret`
-	const clientSecret =
-		typeof cart.payment_intent === "object" && cart.payment_intent?.client_secret
-			? cart.payment_intent.client_secret
-			: null;
+	})
 
 	return structuredClone({
 		...cart,
-		client_secret: clientSecret, // Attach client_secret safely
+		cart:{
+			id:cartJson.id
+		},
+		client_secret: paymentIntent.client_secret, // Attach client_secret safely
 	});
 }
 

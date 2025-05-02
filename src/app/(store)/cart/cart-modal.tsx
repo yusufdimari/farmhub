@@ -37,10 +37,10 @@ export async function CartModalPage() {
 					<ul role="list" className="-my-6 divide-y divide-neutral-200">
 						{cart.line_items?.data?.map((item) => {
 							const product = item.price?.product;
-           // Check if product is an object and not deleted
-            const isValidProduct = typeof product === "object" && "name" in product;
-            const productName = isValidProduct ? product.name : "Unknown Product";
-            const productImages = isValidProduct && "images" in product ? product.images : [];
+							// Check if product is an object and not deleted
+								const isValidProduct = typeof product === "object" && "name" in product;
+								const productName = isValidProduct ? product.name : "Unknown Product";
+								const productImages = isValidProduct && "images" in product ? product.images : [];
 							return (
 							<li
 								key={item.id}

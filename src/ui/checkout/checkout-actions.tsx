@@ -14,6 +14,7 @@ export const saveShippingRateAction = async ({ shippingRateId }: { shippingRateI
 		throw new Error("Invalid shipping rate id");
 	}
 
+
 	await Commerce.cartSaveShipping({ cartId: cart.cart.id, shippingRateId });
 };
 
