@@ -28,5 +28,5 @@ export const saveBillingAddressAction = async ({
 		throw new Error("No cart id found in cookies");
 	}
 
-	// await Commerce.cartSaveBillingAddress({ cartId: cart.cart.id, billingAddress });
+	await Commerce.cartSaveBillingAddress({ cartId: cart.cart.id, billingAddress });
 };

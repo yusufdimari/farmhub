@@ -90,7 +90,6 @@ export async function clearCartCookieAction() {
 
 export async function addToCartAction(formData: FormData) {
 	const productId = formData.get("productId");
-	const origin = 'http://localhost:3000/products/';
 	if (!productId || typeof productId !== "string") {
 		throw new Error("Invalid product ID");
 	}
@@ -116,8 +115,8 @@ export async function addToCartAction(formData: FormData) {
 		payment_method_types: ["card"],
 		mode: "payment",
 		line_items: lineItems,
-		success_url: `${origin}/success`,
-		cancel_url: `${origin}/cancel`,
+		success_url: `${window.location.origin}/success`,
+		cancel_url: `${window.location.origin}/cancel`,
 		payment_intent_data: {
 		setup_future_usage: "on_session", // Enables saving cards for future payments
 	},
